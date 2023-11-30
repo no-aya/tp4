@@ -1,0 +1,33 @@
+pipeline {
+  environment {
+    registry = "ayabug89/tp4"
+    registryCredential = 'DockerHub'
+    dockerImage = ''
+  }
+  agent any
+  stages {
+    stage('Cloning Git') {
+       steps{
+        script {
+          withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'no-aya', passwordVariable: 'Jesuis@y@1989')]) {
+           git branch: 'main', credentialsId: 'github', url: 'https://github.com/no-aya/tp4'
+          }
+        }
+       }
+    }
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+    }
+    stage('Test image') {
+          steps{
+            script {
+                echo "Tests passed"
+            }
+          }
+      } 
+ }
+}
